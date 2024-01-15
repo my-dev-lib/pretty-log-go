@@ -1,4 +1,4 @@
-package log
+package pretty_log
 
 import (
 	"fmt"

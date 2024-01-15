@@ -1,44 +1,45 @@
-package main
+package pretty_log_test
 
 import (
 	"fmt"
-	"main/log"
+	prettylog "github.com/my-dev-lib/pretty-log-go"
+	"testing"
 )
 
-func testHighlightLine() {
-	fmt.Println(log.GetHighlightLine("欢迎进入 V1.0 系统", 30))
+func TestHighlightLine(t *testing.T) {
+	fmt.Println(prettylog.GetHighlightLine("欢迎进入 V1.0 系统", 30))
 
 	lines := []string{"欢迎进入 V1.0 系统", "运行中…"}
-	fmt.Println(log.GetHighlightLines(lines, 25))
+	fmt.Println(prettylog.GetHighlightLines(lines, 25))
 }
 
-func testLog() {
-	log.P("log.print(...)\n")
-	log.Pf("log.printf %s\n", "(...)")
-	log.Pln("log.println(...)")
+func TestLog(t *testing.T) {
+	prettylog.P("log.print(...)\n")
+	prettylog.Pf("log.printf %s\n", "(...)")
+	prettylog.Pln("log.println(...)")
 
-	log_ := log.NewLog("[Test]")
-	log_.SetFlag(log.FlagColorEnabled)
+	log_ := prettylog.NewLog("[Test]")
+	log_.SetFlag(prettylog.FlagColorEnabled)
 	log_.I("This is an info level log.")
 	log_.D("This is a debug level log.")
 	log_.W("This is a warn level log.")
 	log_.E("This is an error level log.")
 }
 
-func testPrettyTable() {
+func TestPrettyTable(t *testing.T) {
 	// 直接获得表格
 	content := [][]interface{}{
 		{"Name", "Age", "City", "High"},
 		{"Alice", 25, "Beijing", "170cm"},
 		{"Bob", 30, "San Francisco", "180cm"},
 	}
-	fmt.Println(log.GetPrettyTable(content))
+	fmt.Println(prettylog.GetPrettyTable(content))
 
 	// 带名称
-	fmt.Println(log.GetPrettyTableWithName(content, "Members"))
+	fmt.Println(prettylog.GetPrettyTableWithName(content, "Members"))
 
 	// 逐行记录表格，统一获得
-	prettyTable := log.NewPrettyTable()
+	prettyTable := prettylog.NewPrettyTable()
 	prettyTable.SetTableName("Members")
 	prettyTable.SetTitles("Name", "Age", "City", "High")
 	prettyTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -46,7 +47,7 @@ func testPrettyTable() {
 	fmt.Println(prettyTable.Get())
 
 	// 垂直表格
-	verticalTable := log.NewVerticalPrettyTable()
+	verticalTable := prettylog.NewVerticalPrettyTable()
 	verticalTable.SetTableName("Members")
 	verticalTable.SetTitles("Name", "Age", "City", "High")
 	verticalTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -54,8 +55,8 @@ func testPrettyTable() {
 	fmt.Println(verticalTable.Get())
 }
 
-func main() {
-	testHighlightLine()
-	testLog()
-	testPrettyTable()
+func TestAll(t *testing.T) {
+	TestHighlightLine(t)
+	TestLog(t)
+	TestPrettyTable(t)
 }
