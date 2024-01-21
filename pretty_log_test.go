@@ -14,16 +14,16 @@ func TestHighlightLine(t *testing.T) {
 }
 
 func TestLog(t *testing.T) {
-	prettylog.P("log.print(...)\n")
-	prettylog.Pf("log.printf %s\n", "(...)")
-	prettylog.Pln("log.println(...)")
+	prettylog.P("prettylog.print(...)\n")
+	prettylog.Pf("prettylog.printf %s\n", "(...)")
+	prettylog.Pln("prettylog.println(...)")
 
-	log_ := prettylog.NewLog("[Test]")
-	log_.SetFlag(prettylog.FlagColorEnabled)
-	log_.I("This is an info level log.")
-	log_.D("This is a debug level log.")
-	log_.W("This is a warn level log.")
-	log_.E("This is an error level log.")
+	log := prettylog.NewLog("[Test]")
+	log.SetFlag(prettylog.FlagColorEnabled)
+	log.I("This is an info level log.")
+	log.D("This is a debug level log.")
+	log.W("This is a warn level log.")
+	log.E("This is an error level log.")
 }
 
 func TestPrettyTable(t *testing.T) {

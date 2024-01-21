@@ -1,25 +1,43 @@
-# 说明
+# Pretty Log
 
 简单日志，在一定程度上使打印的日志简洁清晰。
+
+## TODO
+
+1. 水平表格增加标题居中 Flag；
+2. 垂直表格增加序号隐藏；
+
+## 使用
+
+```shell
+go get github.com/my-dev-lib/pretty-log-go
+```
+
+```go
+import (
+    prettylog "github.com/my-dev-lib/pretty-log-go"
+)
+```
 
 ## 输出不同级别日志
 
 ```go
-log.P("log.print(...)\n")
-log.Pf("log.printf %s\n", "(...)")
-log.Pln("log.println(...)")
+prettylog.P("prettylog.print(...)\n")
+prettylog.Pf("prettylog.printf %s\n", "(...)")
+prettylog.Pln("prettylog.println(...)")
 
-log_ := log.NewLog("[Test]")
-log_.I("This is an info level log.")
-log_.D("This is a debug level log.")
-log_.W("This is a warn level log.")
-log_.E("This is an error level log.")
+log := prettylog.NewLog("[Test]")
+log.SetFlag(prettylog.FlagColorEnabled)
+log.I("This is an info level log.")
+log.D("This is a debug level log.")
+log.W("This is a warn level log.")
+log.E("This is an error level log.")
 ```
 
 ```shell
-2024/01/14 19:19:29 log.print(...)
-2024/01/14 19:19:29 log.printf (...)
-2024/01/14 19:19:29 log.println(...)
+2024/01/14 19:19:29 prettylog.print(...)
+2024/01/14 19:19:29 prettylog.printf (...)
+2024/01/14 19:19:29 prettylog.println(...)
 2024/01/14 19:19:29 [Test][INFO] This is an info level log.
 2024/01/14 19:19:29 [Test][DEBUG] This is a debug level log.
 2024/01/14 19:19:29 [Test][WARN] This is a warn level log.
@@ -29,7 +47,7 @@ log_.E("This is an error level log.")
 开启颜色（不能保证所有终端都支持）。
 
 ```go
-log_.SetFlag(log.FlagColorEnabled)
+log.SetFlag(prettylog.FlagColorEnabled)
 ```
 
 ![colorful_log.png](./arts/colorful_log.png)
@@ -37,10 +55,10 @@ log_.SetFlag(log.FlagColorEnabled)
 ## 输出醒目的信息
 
 ```go
-fmt.Println(log.GetHighlightLine("欢迎进入 V1.0 系统", 30))
+fmt.Println(prettylog.GetHighlightLine("欢迎进入 V1.0 系统", 30))
 
 lines := []string{"欢迎进入 V1.0 系统", "运行中…"}
-fmt.Println(log.GetHighlightLines(lines, 25))
+fmt.Println(prettylog.GetHighlightLines(lines, 25))
 ```
 
 ```shell
@@ -65,10 +83,10 @@ content := [][]interface{}{
     {"Alice", 25, "Beijing", "170cm"},
     {"Bob", 30, "San Francisco", "180cm"},
 }
-fmt.Println(log.GetPrettyTable(content))
+fmt.Println(prettylog.GetPrettyTable(content))
 
 // 带名称
-fmt.Println(log.GetPrettyTableWithName(content, "Members"))
+fmt.Println(prettylog.GetPrettyTableWithName(content, "Members"))
 ```
 
 ```shell
@@ -92,7 +110,7 @@ fmt.Println(log.GetPrettyTableWithName(content, "Members"))
 
 ```go
 // 逐行记录表格，统一获得
-prettyTable := log.NewPrettyTable()
+prettyTable := prettylog.NewPrettyTable()
 prettyTable.SetTableName("Members")
 prettyTable.SetTitles("Name", "Age", "City", "High")
 prettyTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -115,7 +133,7 @@ fmt.Println(prettyTable.Get())
 
 ```go
 // 垂直表格
-verticalTable := log.NewVerticalPrettyTable()
+verticalTable := prettylog.NewVerticalPrettyTable()
 verticalTable.SetTableName("Members")
 verticalTable.SetTitles("Name", "Age", "City", "High")
 verticalTable.AddValues("Alice", 25, "Beijing", "170cm")
