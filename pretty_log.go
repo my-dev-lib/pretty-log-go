@@ -223,6 +223,8 @@ func (hpt *HorizontalPrettyTable) updateNameWidths(arr []any) {
 // SetTitles 设置表格标题
 func (hpt *HorizontalPrettyTable) SetTitles(titles ...any) {
 	clear(hpt.titles)
+	hpt.titles = hpt.titles[:0]
+
 	hpt.titles = append(hpt.titles, titles...)
 	hpt.updateNameWidths(titles)
 }
@@ -399,6 +401,8 @@ func (vpt *VerticalPrettyTable) SetTableName(tableName string) {
 
 func (vpt *VerticalPrettyTable) SetTitles(titles ...any) {
 	clear(vpt.titles)
+	vpt.titles = vpt.titles[:0]
+
 	vpt.titles = append(vpt.titles, titles...)
 }
 
