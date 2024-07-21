@@ -7,6 +7,7 @@ import (
 )
 
 func TestHighlightLine(t *testing.T) {
+	fmt.Println("--== TestHighlightLine ==--")
 	fmt.Println(prettylog.GetHighlightLine("欢迎进入 V1.0 系统", 30))
 
 	lines := []string{"欢迎进入 V1.0 系统", "运行中…"}
@@ -14,6 +15,7 @@ func TestHighlightLine(t *testing.T) {
 }
 
 func TestLog(t *testing.T) {
+	fmt.Println("--== TestLog ==--")
 	prettylog.P("prettylog.print(...)\n")
 	prettylog.Pf("prettylog.printf %s\n", "(...)")
 	prettylog.Pln("prettylog.println(...)")
@@ -27,19 +29,22 @@ func TestLog(t *testing.T) {
 }
 
 func TestPrettyTable(t *testing.T) {
+	fmt.Println("--== TestPrettyTable ==--")
 	// 直接获得表格
 	content := [][]interface{}{
 		{"Name", "Age", "City", "High"},
 		{"Alice", 25, "Beijing", "170cm"},
 		{"Bob", 30, "San Francisco", "180cm"},
 	}
-	fmt.Println(prettylog.GetPrettyTable(content))
+
+	fmt.Println(prettylog.GetHorizontalPrettyTable(content))
 
 	// 带名称
-	fmt.Println(prettylog.GetPrettyTableWithName(content, "Members"))
+	fmt.Println(prettylog.GetHorizontalPrettyTableWithName(content, "Members"))
 
 	// 逐行记录表格，统一获得
 	prettyTable := prettylog.NewPrettyTable()
+	prettyTable.SetGravity(prettylog.GravityHorizontal)
 	prettyTable.SetTableName("Members")
 	prettyTable.SetTitles("Name", "Age", "City", "High")
 	prettyTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -47,7 +52,8 @@ func TestPrettyTable(t *testing.T) {
 	fmt.Println(prettyTable.Get())
 
 	// 垂直表格
-	verticalTable := prettylog.NewVerticalPrettyTable()
+	verticalTable := prettylog.NewPrettyTable()
+	verticalTable.SetGravity(prettylog.GravityVertical)
 	verticalTable.SetTableName("Members")
 	verticalTable.SetTitles("Name", "Age", "City", "High")
 	verticalTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -56,7 +62,7 @@ func TestPrettyTable(t *testing.T) {
 }
 
 func TestAll(t *testing.T) {
-	TestHighlightLine(t)
-	TestLog(t)
+	// TestHighlightLine(t)
+	// TestLog(t)
 	TestPrettyTable(t)
 }
