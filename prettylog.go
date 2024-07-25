@@ -5,6 +5,45 @@ import (
 	"strings"
 )
 
+func getHighlightLine(content string, width int) string {
+	// 1. top line
+	line := "┏"
+	for i := 0; i < width-1; i++ {
+		line += "━"
+	}
+
+	// 2. text
+	line += "\n"
+	line += content
+	line += "\n"
+
+	// 3. bottom line
+	line += "┗"
+	for i := 0; i < width-1; i++ {
+		line += "━"
+	}
+
+	return line
+}
+
+// GetHighlightLine 获取高亮突出显示的一行
+func GetHighlightLine(text string, width int) string {
+	content := "┃ " + text
+	return getHighlightLine(content, width)
+}
+
+// GetHighlightLines 获取高亮突出显示的若干行
+func GetHighlightLines(texts []string, width int) string {
+	content := ""
+	for _, text := range texts {
+		content += "┃ " + text + "\n"
+	}
+
+	content = strings.TrimSuffix(content, "\n")
+
+	return getHighlightLine(content, width)
+}
+
 // GetHorizontalPrettyTable 获得横向美观的表格
 func GetHorizontalPrettyTable(content [][]any) string {
 	return GetHorizontalPrettyTableWithName(content, "")
@@ -48,7 +87,7 @@ func getPrettyTableWithOption(content [][]any, tableName string, gravity Gravity
 }
 
 func NewPrettyTable() PrettyTable {
-	return &PrettyTableImpl{}
+	return &prettyTableImpl{}
 }
 
 type Gravity int
@@ -66,7 +105,7 @@ type PrettyTable interface {
 	Get() string
 }
 
-type PrettyTableImpl struct {
+type prettyTableImpl struct {
 	nameWidths []int
 	titles     []any
 	content    [][]any
@@ -74,11 +113,11 @@ type PrettyTableImpl struct {
 	gravity    Gravity
 }
 
-func (pti *PrettyTableImpl) SetTableName(tableName string) {
+func (pti *prettyTableImpl) SetTableName(tableName string) {
 	pti.tableName = tableName
 }
 
-func (pti *PrettyTableImpl) SetTitles(titles ...any) {
+func (pti *prettyTableImpl) SetTitles(titles ...any) {
 	if pti.isVertical() {
 		pti.SetTitlesVertical(titles)
 	} else {
@@ -86,20 +125,20 @@ func (pti *PrettyTableImpl) SetTitles(titles ...any) {
 	}
 }
 
-func (pti *PrettyTableImpl) SetTitlesVertical(titles []any) {
+func (pti *prettyTableImpl) SetTitlesVertical(titles []any) {
 	clear(pti.titles)
 	pti.titles = pti.titles[:0]
 	pti.titles = append(pti.titles, titles...)
 }
 
-func (pti *PrettyTableImpl) SetTitlesHorizontal(titles []any) {
+func (pti *prettyTableImpl) SetTitlesHorizontal(titles []any) {
 	clear(pti.titles)
 	pti.titles = pti.titles[:0]
 	pti.titles = append(pti.titles, titles...)
 	pti.updateNameWidthsHorizontal(titles)
 }
 
-func (pti *PrettyTableImpl) AddValues(values ...any) {
+func (pti *prettyTableImpl) AddValues(values ...any) {
 	if pti.isVertical() {
 		pti.AddValuesVertical(values...)
 	} else {
@@ -107,21 +146,21 @@ func (pti *PrettyTableImpl) AddValues(values ...any) {
 	}
 }
 
-func (pti *PrettyTableImpl) AddValuesVertical(values ...any) {
+func (pti *prettyTableImpl) AddValuesVertical(values ...any) {
 	pti.content = append(pti.content, values)
 	pti.updateNameWidthsVertical(values)
 }
 
-func (pti *PrettyTableImpl) AddValuesHorizontal(values ...any) {
+func (pti *prettyTableImpl) AddValuesHorizontal(values ...any) {
 	pti.content = append(pti.content, values)
 	pti.updateNameWidthsHorizontal(values)
 }
 
-func (pti *PrettyTableImpl) SetGravity(gravity Gravity) {
+func (pti *prettyTableImpl) SetGravity(gravity Gravity) {
 	pti.gravity = gravity
 }
 
-func (pti *PrettyTableImpl) Get() string {
+func (pti *prettyTableImpl) Get() string {
 	if pti.isVertical() {
 		return pti.GetVertical()
 	} else {
@@ -129,11 +168,11 @@ func (pti *PrettyTableImpl) Get() string {
 	}
 }
 
-func (pti *PrettyTableImpl) isVertical() bool {
+func (pti *prettyTableImpl) isVertical() bool {
 	return pti.gravity == GravityVertical
 }
 
-func (pti *PrettyTableImpl) updateNameWidthsHorizontal(arr []any) {
+func (pti *prettyTableImpl) updateNameWidthsHorizontal(arr []any) {
 	if len(pti.nameWidths) == 0 {
 		for i := 0; i < len(arr); i++ {
 			pti.nameWidths = append(pti.nameWidths, 0)
@@ -152,7 +191,7 @@ func (pti *PrettyTableImpl) updateNameWidthsHorizontal(arr []any) {
 	}
 }
 
-func (pti *PrettyTableImpl) getMaxWidthHorizontal() int {
+func (pti *prettyTableImpl) getMaxWidthHorizontal() int {
 	maxWidth := 0
 	for _, v := range pti.nameWidths {
 		maxWidth += v
@@ -163,7 +202,7 @@ func (pti *PrettyTableImpl) getMaxWidthHorizontal() int {
 	return maxWidth
 }
 
-func (pti *PrettyTableImpl) getPrettyTableHorizontal(tableName string, nameWidths []int, titles []any, content [][]any) string {
+func (pti *prettyTableImpl) getPrettyTableHorizontal(tableName string, nameWidths []int, titles []any, content [][]any) string {
 	if len(content) == 0 {
 		return ""
 	}
@@ -258,11 +297,11 @@ func (pti *PrettyTableImpl) getPrettyTableHorizontal(tableName string, nameWidth
 }
 
 // GetHorizontal 获得横向表格内容
-func (pti *PrettyTableImpl) GetHorizontal() string {
+func (pti *prettyTableImpl) GetHorizontal() string {
 	return pti.getPrettyTableHorizontal(pti.tableName, pti.nameWidths, pti.titles, pti.content)
 }
 
-func (pti *PrettyTableImpl) updateNameWidthsVertical(arr []any) {
+func (pti *prettyTableImpl) updateNameWidthsVertical(arr []any) {
 	if len(pti.nameWidths) == 0 {
 		// 固定 2 个
 		pti.nameWidths = append(pti.nameWidths, 0, 0)
@@ -299,7 +338,7 @@ func (pti *PrettyTableImpl) updateNameWidthsVertical(arr []any) {
 	}
 }
 
-func (pti *PrettyTableImpl) getMaxWidthVertical() int {
+func (pti *prettyTableImpl) getMaxWidthVertical() int {
 	maxWidth := 0
 	for _, v := range pti.nameWidths {
 		maxWidth += v
@@ -309,7 +348,7 @@ func (pti *PrettyTableImpl) getMaxWidthVertical() int {
 	return maxWidth
 }
 
-func (pti *PrettyTableImpl) getPrettyTableVertical(tableName string, nameWidths []int, titles []any, content [][]any) string {
+func (pti *prettyTableImpl) getPrettyTableVertical(tableName string, nameWidths []int, titles []any, content [][]any) string {
 	if len(content) == 0 {
 		return ""
 	}
@@ -363,7 +402,7 @@ func (pti *PrettyTableImpl) getPrettyTableVertical(tableName string, nameWidths 
 	return pretty.String()
 }
 
-func (pti *PrettyTableImpl) GetVertical() string {
+func (pti *prettyTableImpl) GetVertical() string {
 	return pti.getPrettyTableVertical(pti.tableName, pti.nameWidths, pti.titles, pti.content)
 }
 

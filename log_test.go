@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+const logTag = "log_test"
+
 func TestHighlightLine(t *testing.T) {
 	fmt.Println("--== TestHighlightLine ==--")
 	fmt.Println(prettylog.GetHighlightLine("欢迎进入 V1.0 系统", 30))
@@ -16,16 +18,21 @@ func TestHighlightLine(t *testing.T) {
 
 func TestLog(t *testing.T) {
 	fmt.Println("--== TestLog ==--")
-	prettylog.P("prettylog.print(...)\n")
-	prettylog.Pf("prettylog.printf %s\n", "(...)")
-	prettylog.Pln("prettylog.println(...)")
+	// 设置项目根目录名称，以便获得干净的栈信息路径
+	prettylog.Setup("pretty-log-go")
 
-	log := prettylog.NewLog("[Test]")
-	log.SetFlag(prettylog.FlagColorEnabled)
-	log.I("This is an info level log.")
-	log.D("This is a debug level log.")
-	log.W("This is a warn level log.")
-	log.E("This is an error level log.")
+	// 使用全局日志对象打印
+	prettylog.Iln(logTag, "This is an info level log.")
+	prettylog.Dln(logTag, "This is a debug level log.")
+	prettylog.Wln(logTag, "This is a warning level log.")
+	prettylog.Eln(logTag, "This is a error level log.")
+	// prettylog.Fatalln("log_test", "This is a fatal level log.")
+	// prettylog.Panicln(logTag, "This is a panic level log.")
+
+	// 使用局部日志对象打印
+	localLogger := prettylog.NewLogger()
+	localLogger.SetFlag(prettylog.FlagStackEnabled)
+	localLogger.Iln(logTag, "This is a custom info level log.")
 }
 
 func TestPrettyTable(t *testing.T) {
@@ -62,7 +69,7 @@ func TestPrettyTable(t *testing.T) {
 }
 
 func TestAll(t *testing.T) {
-	// TestHighlightLine(t)
-	// TestLog(t)
+	TestHighlightLine(t)
+	TestLog(t)
 	TestPrettyTable(t)
 }

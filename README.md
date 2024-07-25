@@ -2,11 +2,6 @@
 
 简单日志，在一定程度上使打印的日志简洁清晰。
 
-## TODO
-
-1. 水平表格增加标题居中 Flag；
-2. 垂直表格增加序号隐藏；
-
 ## 使用
 
 ```shell
@@ -22,26 +17,32 @@ import (
 ## 输出不同级别日志
 
 ```go
-prettylog.P("prettylog.print(...)\n")
-prettylog.Pf("prettylog.printf %s\n", "(...)")
-prettylog.Pln("prettylog.println(...)")
+// 根据模块确定日志标签
+const logTag = "log_test"
 
-log := prettylog.NewLog("[Test]")
-log.SetFlag(prettylog.FlagColorEnabled)
-log.I("This is an info level log.")
-log.D("This is a debug level log.")
-log.W("This is a warn level log.")
-log.E("This is an error level log.")
+// 设置项目根目录名称，以便获得干净的栈信息路径
+prettylog.Setup("pretty-log-go")
+
+// 使用全局日志对象打印
+prettylog.Iln(logTag, "This is an info level log.")
+prettylog.Dln(logTag, "This is a debug level log.")
+prettylog.Wln(logTag, "This is a warning level log.")
+prettylog.Eln(logTag, "This is a error level log.")
+// prettylog.Fatalln("log_test", "This is a fatal level log.")
+// prettylog.Panicln(logTag, "This is a panic level log.")
+
+// 使用局部日志对象打印
+localLogger := prettylog.NewLogger()
+localLogger.SetFlag(prettylog.FlagStackEnabled)
+localLogger.Iln(logTag, "This is a custom info level log.")
 ```
 
 ```shell
-2024/01/14 19:19:29 prettylog.print(...)
-2024/01/14 19:19:29 prettylog.printf (...)
-2024/01/14 19:19:29 prettylog.println(...)
-2024/01/14 19:19:29 [Test][INFO] This is an info level log.
-2024/01/14 19:19:29 [Test][DEBUG] This is a debug level log.
-2024/01/14 19:19:29 [Test][WARN] This is a warn level log.
-2024/01/14 19:19:29 [Test][ERROR] This is an error level log.
+2024/07/25 20:03:29 1308849 I/log_test: This is an info level log. < log_test.go:25
+2024/07/25 20:03:29 1308849 D/log_test: This is a debug level log. < log_test.go:26
+2024/07/25 20:03:29 1308849 W/log_test: This is a warning level log. < log_test.go:27
+2024/07/25 20:03:29 1308849 E/log_test: This is a error level log. < log_test.go:28
+2024/07/25 20:03:29 1308849 I/log_test: This is a custom info level log. < log_test.go:35
 ```
 
 开启颜色（不能保证所有终端都支持）。
@@ -83,10 +84,11 @@ content := [][]interface{}{
     {"Alice", 25, "Beijing", "170cm"},
     {"Bob", 30, "San Francisco", "180cm"},
 }
-fmt.Println(prettylog.GetPrettyTable(content))
+
+fmt.Println(prettylog.GetHorizontalPrettyTable(content))
 
 // 带名称
-fmt.Println(prettylog.GetPrettyTableWithName(content, "Members"))
+fmt.Println(prettylog.GetHorizontalPrettyTableWithName(content, "Members"))
 ```
 
 ```shell
@@ -111,6 +113,7 @@ fmt.Println(prettylog.GetPrettyTableWithName(content, "Members"))
 ```go
 // 逐行记录表格，统一获得
 prettyTable := prettylog.NewPrettyTable()
+prettyTable.SetGravity(prettylog.GravityHorizontal)
 prettyTable.SetTableName("Members")
 prettyTable.SetTitles("Name", "Age", "City", "High")
 prettyTable.AddValues("Alice", 25, "Beijing", "170cm")
@@ -133,7 +136,8 @@ fmt.Println(prettyTable.Get())
 
 ```go
 // 垂直表格
-verticalTable := prettylog.NewVerticalPrettyTable()
+verticalTable := prettylog.NewPrettyTable()
+verticalTable.SetGravity(prettylog.GravityVertical)
 verticalTable.SetTableName("Members")
 verticalTable.SetTitles("Name", "Age", "City", "High")
 verticalTable.AddValues("Alice", 25, "Beijing", "170cm")
