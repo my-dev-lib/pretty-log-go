@@ -113,7 +113,7 @@ func (l *loggerImpl) AddFlag(flag Flag) {
 }
 
 func (l *loggerImpl) Iln(tag string, a ...any) {
-	l.println(LevelInfo, tag, fmt.Sprint(a...))
+	l.println(LevelInfo, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) If(tag string, format string, a ...any) {
@@ -121,7 +121,7 @@ func (l *loggerImpl) If(tag string, format string, a ...any) {
 }
 
 func (l *loggerImpl) Dln(tag string, a ...any) {
-	l.println(LevelDebug, tag, fmt.Sprint(a...))
+	l.println(LevelDebug, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) Df(tag string, format string, a ...any) {
@@ -129,15 +129,15 @@ func (l *loggerImpl) Df(tag string, format string, a ...any) {
 }
 
 func (l *loggerImpl) Wln(tag string, a ...any) {
-	l.println(LevelWarn, tag, fmt.Sprint(a...))
+	l.println(LevelWarn, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) Wf(tag string, format string, a ...any) {
-	l.println(LevelDebug, tag, format, a...)
+	l.println(LevelWarn, tag, format, a...)
 }
 
 func (l *loggerImpl) Eln(tag string, a ...any) {
-	l.println(LevelError, tag, fmt.Sprint(a...))
+	l.println(LevelError, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) Ef(tag string, format string, a ...any) {
@@ -145,7 +145,7 @@ func (l *loggerImpl) Ef(tag string, format string, a ...any) {
 }
 
 func (l *loggerImpl) Fatalln(tag string, a ...any) {
-	l.println(LevelFatal, tag, fmt.Sprint(a...))
+	l.println(LevelFatal, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) Fatalf(tag string, format string, a ...any) {
@@ -153,7 +153,7 @@ func (l *loggerImpl) Fatalf(tag string, format string, a ...any) {
 }
 
 func (l *loggerImpl) Panicln(tag string, a ...any) {
-	l.println(LevelPanic, tag, fmt.Sprint(a...))
+	l.println(LevelPanic, tag, strings.TrimSpace(fmt.Sprintln(a...)))
 }
 
 func (l *loggerImpl) Panicf(tag string, format string, a ...any) {
