@@ -109,7 +109,7 @@ func (l *loggerImpl) SetFlag(flag Flag) {
 }
 
 func (l *loggerImpl) AddFlag(flag Flag) {
-	l.flag &= flag
+	l.flag |= flag
 }
 
 func (l *loggerImpl) Iln(tag string, a ...any) {
