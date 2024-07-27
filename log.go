@@ -305,6 +305,10 @@ func detectProjectRoot(projectDir string) string {
 			break
 		}
 
+		if file == "/" {
+			return ""
+		}
+
 		file = filepath.Dir(file)
 	}
 
